@@ -1,3 +1,3 @@
 ---
-title: ABAPになろう～SAP CALを利用してAS ABAP developer edition環境構築～
+title: ABAPerになろう～SAP CALを利用してAS ABAP developer edition環境構築～
 ...

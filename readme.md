@@ -1,4 +1,4 @@
-# ABAPになろう～SAP CALを利用してAS ABAP developer edition環境構築～
+# ABAPerになろう～SAP CALを利用してAS ABAP Developer Edition環境構築～
 
 **この記事は [SAP Advent Calendar 2020](https://adventar.org/calendars/5047) の12月14日分の記事として執筆しています**
 
@@ -10,8 +10,8 @@
 
 閑話休題
 
-本記事ではABAPerになろうと題して、ABAP開発環境の構築について説明します。　　
-具体的には`SAP CAL`を用いて`AWS`に`AS ABAP developer `をデプロイしてさわってみます。
+本記事ではABAPerになろうと題して、ABAP開発環境の構築について説明します。
+具体的には`SAP CAL`を用いて`AWS`に`AS ABAP Developer Edition`をデプロイしてさわってみます。
 
 ## はじめに
 
@@ -30,26 +30,26 @@ SAPで利用される開発言語 ABAP。
 
 ABAPをトライアルとしてさわれる環境としては、下記がSAPから提供されているかと思います。
 
-1. SAP NetWeaver AS ABAP Developer
+1. SAP NetWeaver AS ABAP Developer Edition
 2. SAP Cloud Platform ABAP Environment Trial
 
 それぞれ下記のようになっています。
 
-1. SAP NetWeaver AS ABAP DeveloperはSAPが提供しているトライアル環境で、環境構築することによりABAP実行環境が利用できるようになります。
+1. `SAP NetWeaver AS ABAP Developer Edition`はSAPが提供しているトライアル用の製品で、環境構築することにより開発者用のABAP環境が利用できるようになります。
 2. SAP Cloud Platform ABAP EnvironmentはSAPがPaaSで提供しているABAP実行基盤で、旧来のABAPerからするとクラウドでABAP！？　みたいな割と衝撃的な環境。　ただし旧来のABAPとはそれはそれで異なる。
 
-今回は`SAP NetWeaver AS ABAP Developer`を`SAP Cloud Appliance Library (CAL)`と呼ばれる仕組みを使い、AWSへデプロイしてみます。
+今回は`SAP NetWeaver AS ABAP Developer Edition`を`SAP Cloud Appliance Library (CAL)`と呼ばれる仕組みを使い、AWSへデプロイしてみます。
 
 `SAP Cloud Appliance Library (CAL)`は登録されているSAPの様々な製品を所有するパブリッククラウドアカウント（AWS,Azure、GCP）に対して手軽にデプロイできるサービスです。
 
-そこにはもちろん`SAP NetWeaver AS ABAP Developer`も登録されているのでこちらをAWSアカウントへデプロイします。
+そこにはもちろん`SAP NetWeaver AS ABAP Developer Edition`も登録されているのでこちらをAWSアカウントへデプロイします。
 
-`CAL`を利用しないで、自前で用意した端末にインストールする場合は下記を参照して実施します。
+なお`CAL`を利用しないで、自前で用意した端末にインストールする場合は下記を参照して実施します。
 
 - [AS ABAP 752 SP04, developer edition: NOW AVAILABLE](https://blogs.sap.com/2019/07/01/as-abap-752-sp04-developer-edition-to-download/)
 - [AS ABAP 7.52 SP04, Developer Edition: Concise Installation Guide](https://blogs.sap.com/2019/10/01/as-abap-7.52-sp04-developer-edition-concise-installation-guide/)
 
-SAPをさわったことない人がいきなりSAPのインストールをするのもハードルがあるような気もするので、まずは`SAP CAL`を利用してみましょう。
+SAPをさわったことない人がいきなりSAP製品のインストールをするのはハードルがあるような気もするので、まずは`SAP CAL`を利用してみましょう。
 
 ## 今回の作業に必要なもの
 
@@ -72,13 +72,11 @@ OpenSAPのページにちょっとだけこのIDの種類について書いて�
 
 [Welcome SAP Employees, Partners and Customers](https://open.sap.com/pages/ecosystem)
 
-```
-D-User: Germany based SAP Employees
-I-User: International based SAP Employees
-C-User: SAP Contractors
-S-User: Licensed Customers or SAP Partners
-P-User: Public SAP users, for example SCN users
-```
+- D-User: Germany based SAP Employees
+- I-User: International based SAP Employees
+- C-User: SAP Contractors
+- S-User: Licensed Customers or SAP Partners
+- P-User: Public SAP users, for example SCN users
 
 今回利用する`SAP CAL`についてはP-Userがあれば利用できるため取得します。
 
@@ -102,7 +100,7 @@ Login/Sign-upを選択
 アカウント有効化が完了しました  
 ![](image/validcomplete.png)
 
-続行すると、ポリシーをどうするか聞かれたので適宜選択して下さい。  
+続行すると、ポリシーをどうするか聞かれたので適宜選択  
 ![](image/policy.png)
 
 ## SAP CALにログインする
@@ -113,21 +111,23 @@ Login/Sign-upを選択
 
 初回ログイン時に追加情報を求められたので入力。
 
+適宜入力して`保存して続行`を選択  
 ![](image/add-info.png)
 
 ![](image/term.png)
 
-必要事項の確認が終わると、`CAL`が開きます。  
+必要事項の確認が終わると、`CAL`が表示  
 ![](image/cal-toppage.png)
 
 ## Accountを設定する
 
 まずは左メニューからAccountを設定します。
 
-ここでは`SAP CAL`からデプロイ先クラウドプラットフォーム接続用の情報を入力します。
+ここでは`SAP CAL`からデプロイ先クラウドプラットフォーム接続用の資格情報を設定します。
 
-AWSへデプロイする場合は`アクセスキー`と`シークレットキー`が必要となるのでAWSで発行して入力して下さい。
-IMAで必要なポリシーについては下記に記載があります。
+AWSへデプロイする場合は`アクセスキー`と`シークレットキー`が必要となるので、事前にAWS側で発行して下さい。
+
+AWS側で発行するIAMに必要なポリシーは下記の記載を参照して下さい。
 
 [How to configure your IAM user?](https://wiki.scn.sap.com/wiki/display/SAPCAL/FAQ+-+Specific+questions+for+Amazon+Web+Services#FAQSpecificquestionsforAmazonWebServices-HowtoconfigureyourIAMuser?)
 
@@ -153,14 +153,15 @@ IMAで必要なポリシーについては下記に記載があります。
 
 Solutionページで`SAP CAL`からデプロイできる製品一覧が参照できます。
 
-`Solutions`
+`Solutions`  
 ![](image/solution-top.png)
 
-`traial`や`dev`と記載がありますが詳細は下記URLが参考になります。
+`traial`や`dev`と記載がありますが詳細は下記URLを参照して下さい。
 
 [FAQ Solution Types and Charging Model](https://blogs.sap.com/2016/08/23/faq-solution-types-and-charging-model/)
 
-2020年12月現在、Solutionの一覧を確認した所、`CAL`で用意されているDeveloper環境としては`SAP NetWeaver AS ABAP 7.51 SP02 on ASE`が最新のようですので、こちらを利用します。
+2020年12月現在、Solutionの一覧を確認した所、`CAL`で用意されているDeveloper Editionとしては`SAP NetWeaver AS ABAP 7.51 SP02 on ASE`が最新のようですので、今回はこちらを利用します。
+
 `SAP NetWeaver AS ABAP 7.51 SP02 on HANA`もありますが、今回は別にHANAをさわりたいわけではないのでASEを選択。
 
 Developer Editionとしては`SAP NetWeaver AS ABAP Developer Edition 7.52 SP04`が現在最新なので、`CAL`ではこのバージョンが用意されていないのは少し残念。
@@ -177,7 +178,7 @@ Solutionから`SAP NetWeaver AS ABAP 7.51 SP02 on ASE`の`Create Instance`を選
 ![](image/751sp2onase-term.png)
 
 登録画面が出てきました。
-basicモードで設定してもいいのですが、今回は`Advanced Mode`を選択
+`basic`モードで設定してもいいのですが、今回は`Advanced Mode`を選択
 
 `Acvanced Mode`を選択  
 ![](image/crateinstance-basic.png)
@@ -188,15 +189,15 @@ basicモードで設定してもいいのですが、今回は`Advanced Mode`を
 デプロイ先のネットワークを選択します。
 今回はデフォルトのまま変更なしでRegionは`us-east-1`を選択します。
 
-`Public Staic IP Adrees`を選択すると、AWSのあ場合はEIPを取得してデプロイ先のインスタンスにアタッチします。
+`Public Staic IP Adrees`を選択すると、AWSの場合は[Elastic IP Address](https://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)を取得してデプロイ先のインスタンスにアタッチします。
 ※EIPはアタッチ先のインスタンスが稼働していない時に料金が発生してしまうので注意。
 
-せっかくだったり東京リージョンを選択したい所ですが、現状は下記のようです。
+またせっかくだったら東京リージョン（ap-northeast-1）を選択したい所ですが、現状は下記のようです。
 
 [When will other AWS regions be supported?
 ](https://wiki.scn.sap.com/wiki/display/SAPCAL/FAQ+-+Specific+questions+for+Amazon+Web+Services#FAQSpecificquestionsforAmazonWebServices-WhenwillotherAWSregionsbesupported?)
 
-入力して`Step 3`を選択  
+適宜入力して`Step 3`を選択  
 ![](image/advance-step2.png)
 
 ここでは対象となるインタンス、ストレージ、エンドポイント設定をできます。
@@ -204,24 +205,24 @@ basicモードで設定してもいいのですが、今回は`Advanced Mode`を
 `SAP Frontend`については必須ではないためチェックを外してデプロイ対象から除外する事もできますが。
 今回は`SAP GUI`や`Eclipse`などのツール類が入っている環境が欲しいのでデプロイにチェック（デフォルトのまま）
 
-またデフォルトだと
+またエンドポイントについてデフォルトだと
 
 `SAP Frontend`サーバのRDP（3389）を`0.0.0.0/0`で全許可にしているのと、
-SAPのLinuxサーバのSSH（22）を`0.0.0.0/0`で全許可にしていたりするので。
+SAP LinuxサーバのSSH（22）を`0.0.0.0/0`で全許可にしていたりするので。
 
 ここらへんは状況に応じて適宜調整した方が望ましい感じです。　これはあとからCALの画面で変更もできます。
 
 適宜入力して`Step 4`を選択  
 ![](image/advance-step3.png)
 
-指定できるマスターパスワードには結構制限がありますが、マスターパスワードを入力します。
+指定できるマスターパスワードには結構制限がありますが、条件に沿うマスターパスワードを入力します。
 
 マスターパスワードを入力して`Setp 5`を選択  
 ![](image/advance-step4.png)
 
 インスタンスの起動停止スケジュールを設定できますが、`Manual Activate and Suspend`を選択
 
-完全マニュアルなので落とし忘れで課金されてしまうので注意して下さい。
+この場合、起動停止は完全マニュアルなのでインスタンス停止忘れで課金されてしまうので注意して下さい。
 
 適宜入力して`Review`を選択  
 ![](image/advance-step5.png)
@@ -238,7 +239,7 @@ SAPのLinuxサーバのSSH（22）を`0.0.0.0/0`で全許可にしていたり�
 しばらく待つように表示されるので、`Close`を選択  
 ![](image/create-info.png)
 
-Instancesのページでデプロイtのステータスが確認できるので、時間をおいてたまに確認します。
+Instancesのページでデプロイ状況のステータスが確認できるので、時間をおいてたまに確認します。
 
 `prepared`  
 ![](image/status-prepared.png)
@@ -252,10 +253,12 @@ Instancesのページでデプロイtのステータスが確認できるので�
 ## SAP Frontendに接続してみる
 
 デプロイされたSAPシステムに接続するためには、Windows環境ならば`SAP GUI for Windows`と呼ばれるGUIソフトで接続を行うのですが。
+
 今回利用しているP-Userでは該当の`SAP GUI for Windows`をダウンロードする事はできません。
 
-今回、必須ではない`SAP Frontend`サーバもデプロイしましたが、この`SAP Frontend`サーバに`SAP GUI`がインストールされているため。
-まずはRDPで`SAP Frontend`サーバにログインします。
+今回、必須ではない`SAP Frontend`サーバもデプロイしましたが、これは`SAP Frontend`サーバに`SAP GUI`がインストールされているためです。
+
+なのでまずはRDPで`SAP Frontend`サーバにログインします。
 
 Instance画面から`connect`を選択  
 ![](image/status-active.png)
@@ -266,10 +269,9 @@ Instance画面から`connect`を選択
 - RDPの設定ファイル
 - SAPシステムにつなぐためのGUIであるSAP GUI用の設定ファイル
 
-スタートガイドについては、用意されている各種ユーザや初期パスワードについて記載があるため。
-一度目を通す方がよいです。
+スタートガイドについては、デプロイした環境について用意されている各種ユーザや初期パスワードについて記載があるため。一度目を通す方がよいです。
 
-RDPの`Connect`を選択してrdpファイルをダウンロード
+RDPの`Connect`を選択してrdpファイルをダウンロード  
 ![](image/connect.png)
 
 ダウンロードしたrdpファイルを実行すると接続先が指定された状態でリモートデスクトップ接続が起動するのでログインします。
@@ -292,18 +294,17 @@ RDPの`Connect`を選択してrdpファイルをダウンロード
 
 `SAP Logonpad`が起動してくるので、接続したいSAPシステムを選択します。
 
-今回はCALからデプロイした`SAP Frontend`サーバなので、予め接続先が設定されいるので`SAP Netweaver AS ABAP and SAP BW 7.51 on SAP ASE`をダブルクリック。
+今回はCALからデプロイした`SAP Frontend`サーバなので、予め接続先が設定されいるので、設定済みの`SAP Netweaver AS ABAP and SAP BW 7.51 on SAP ASE`をダブルクリック。
 
 `SAP Netweaver AS ABAP and SAP BW 7.51 on SAP ASE`をダブルクリック  
 ![](image/sap-logonpad.png)
 
-
 `SAPシステム`のログイン画面が出てきました。
 
 `SAPシステム`に用意されているユーザについても、スタートガイドに記載があります。
-ここではログイン確認として下記でログインしてみます。
+ここではログイン確認として下記ユーザでログインしてみます。
 
-- Client001
+- CLIENT001
 - DEVELOPER
 - デプロイ時に設定したマスターパスワード
 
@@ -312,7 +313,7 @@ RDPの`Connect`を選択してrdpファイルをダウンロード
 
 ログインできました。ログイン確認はできたのでとりあえずこの画面は閉じておきます。
 
-ログインできました  
+CLIENT001のDEVELOPERでログイン  
 ![](image/sap-easy-access.png)
 
 ## ライセンスの登録
@@ -322,33 +323,35 @@ RDPの`Connect`を選択してrdpファイルをダウンロード
 
 さきほどと同様に`SAP Logon`から下記ユーザでSAPにログインします。
 
-- Client000
+- CLIENT000
 - SAP*
 - デプロイ時に設定したマスターパスワード
 
+CLIENT000のSAP*でログイン  
 ![](image/cli000-sapask-login.png)
 
 SAPでは各機能画面へアクセスするには左ペインにあるメニューから行く方法もありますが。
 左上の入力ボックス（コマンドフィールド）にトランザクションコードと呼ばれる、機能に紐づくコードを入力する事により画面遷移ができます。
 （大文字小文字の考慮はなし）
 
-ここではSAPライセンス管理のトランザクションコードである、`slicense`を入力してライセンス画面を表示します。
+ここではSAPライセンス管理のトランザクションコードである、`SLICENSE`を入力してライセンス画面を表示します。
 
+コマンドフィールドに`slicense`を入力してENTER  
 ![](image/call-slicense.png)
 
 `SLICENSE`の画面が開きました、`Active Hardware Key`は後で使うので控えておきます。
 
-`Active Hardware Key`を控えておく  
+後で利用するので`Active Hardware Key`を控える  
 ![](image/slicense-temp.png)
 
 [Minisap](http://www.sap.com/minisap)のサイトにアクセス
 
-今回利用している、NPL - SAP NetWeaver 7.x(Sybase ASE)を選択。
+今回利用している、`NPL - SAP NetWeaver 7.x(Sybase ASE)`を選択。
 
 `NPL - SAP NetWeaver 7.x(Sybase ASE)`を選択  
 ![](image/minisap-generate.png)
 
-あとは先程控えておいて`Active Hardware Key`や必須項目を入力して`Generate`を選択
+先程控えておいて`Active Hardware Key`や必須項目を入力して`Generate`を選択
 
 必要事項を入力して`Generate`を選択  
 ![](image/minisap-generate-info.png)
@@ -370,7 +373,7 @@ SAPでは各機能画面へアクセスするには左ペインにあるメニ�
 
 Tempライセンスが削除できました。
 
-ライセンスが削除された事を確認  
+Tempライセンスが削除された事を確認  
 ![](image/delete-temp-lisence3.png)
 
 `Edit -> Install License`を選択  
@@ -398,11 +401,11 @@ Tempライセンスが削除できました。
 
 下記でSAPにログインしてください。
 
-- Client001
+- CLIENT001
 - DEVELOPER
 - デプロイ時に設定したマスターパスワード
 
-左上の入力ボックス（コマンドフィールド）に`se38`と入力して`ABAP Editor`へ移動します。
+左上の入力ボックス（コマンドフィールド）に`SE38`と入力して`ABAP Editor`へ移動します。
 
 `se38`と入力してエンター  
 ![](image/call-se38.png)
@@ -462,6 +465,8 @@ Hello Worldと表示されました
 `Hello World`  
 ![](image/write-helloworld.png)
 
+ABAPの世界へようこそ！
+
 ## コマンドフィールドでの画面移動について
 
 コマンドフィールドにフォーカスを当てた状態で、`F1`キーを押すと。
@@ -479,13 +484,13 @@ SAPにログインした最初の`SAP Easy Access`から移動する際は、ト
 SAPはERPパッケージなので様々な業務トランザクションを処理する機能を提供します。
 機能ごとにコンポーネントと呼ばれる単位で分かれており、必要な物を選択してSAPシステムへインストールする事ができます。
 
-`AS ABAP developer edition`では下記のようなSAPシステムのベースとなるコンポーネントのみがインストールされており。
+`AS ABAP Developer Edition`では下記のようなSAPシステムのベースとなるコンポーネントのみがインストールされており。
 業務系の機能を持つコンポーネントはインストールされていません。
 
 なので、この環境はABAPを書いて色々と遊べますが。業務系の画面だったり、それらのテーブルだったりはインストールされていません。
 そこらへんさわってを遊んでみたい場合は、`SAP IDES`とかを利用する必要がありますが本記事では対象外。
 
-ちなみにインストールされているソフトウェアコンポーネントは下記から確認できます。
+インストールされているソフトウェアコンポーネントは下記から確認できます。
 
 `System -> Status -> SAP System dataの虫眼鏡ボタン（Component）`
 
@@ -498,6 +503,8 @@ SAPはERPパッケージなので様々な業務トランザクションを処�
 `Installed Softwre`が表示  
 ![](image/component.png)
 
+`SAP_APPL`だったり、業務なコンポーネントがインストールされていないので本当に最小限という感じですね。
+
 ## ABAP keyword Documentation
 
 トランザクションコード `abapdocu` で`ABAP keyword Documentation`を参照する事ができます。
@@ -506,7 +513,7 @@ SAPはERPパッケージなので様々な業務トランザクションを処�
 
 ここにはABAPの知識が詰まっています。
 
-なので、ここを読み込めば非常に勉強になります。
+なので、ここを読み込めば非常によい勉強になります。
 
 ## ABAP Examples
 
@@ -534,7 +541,7 @@ SAPはERPパッケージなので様々な業務トランザクションを処�
 ## ABAP Development Tools in Eclipseで接続してみる
 
 `SAP GUI`でSAPシステムに接続してABAP開発する以外にも。
-`ABAP Development Tools（ADT） in Eclipse`というToolを利用してABAPをコーディングする事もできます。
+`ABAP Development Tools（ADT） in Eclipse`というToolを利用してABAPをコーディングする事ができます。
 
 `SAP Frontend`サーバにはこのツールもすでにインストール済みで用意されているためこちらを利用してSAPシステムに接続してみます。
 
@@ -543,7 +550,7 @@ SAPはERPパッケージなので様々な業務トランザクションを処�
 ![](image/execute-eclipse.png)
 
 Eclipseが起動すると、すでにSAPの接続先が設定されている状態で起動してきます。
-本来だったらeclipseのインストール後に、ADTインストールや接続設定をする必要がありますが、`SAP CAL`がここらへん全部やってくれてクリックするだけです。
+本来だったらeclipseのインストール後に、ADTインストールや接続設定をする必要がありますが、`SAP CAL`がここらへん全部調整してくれて、ユーザはクリックするだけです。
 
 今回接続したい、`NPL_001_developer_en`をダブルクリックする  
 ![](image/login-npl001-developer-on-eclipse.png)
@@ -558,6 +565,8 @@ Eclipseが起動すると、すでにSAPの接続先が設定されている状�
 先程、`ZHELLOWORLD`を作成する時に、`Local Object`を選択しました。
 パケージやら`Local Object`、`＄TMP`みたいな話はすべて飛ばしてしまいますが。
 下記の場所に先程作成した`ZHELLOWORLD`があります。
+
+`Favorite Packages -> $TMP -> Source Code Library -> Programs -> ZHELLOWORLD`
 
 `ZHELLOWORLD`を表示  
 ![](image/eclipse-view-zhelloworld.png)
@@ -590,7 +599,7 @@ Eclipseが起動すると、すでにSAPの接続先が設定されている状�
 実行結果が表示  
 ![](image/eclipse-execute-zhelloworld4.png)
 
-このように`SAP GUI`だけではなくEclipseでも`ADT`をつかって開発が出来ます。
+このように`SAP GUI`だけではなくEclipseで`ADT`をつかって開発が出来ます。
 
 ## SAP Serverにログイン
 
@@ -612,23 +621,25 @@ ssh root@<<ipアドレス>> -i <<pemファイルのパス>>
 `ssh`で接続  
 ![](image/ssh-connect-linux.png)
 
-sshで接続できました、接続できない場合は`Access Points`の設定が適切かどうかや、そもそもインスタンスが起動しているか等々適宜確認して下さい。
+sshで接続できました、接続できない場合は`Access Points`の設定が適切かどうかや、そもそもインスタンスが起動しているか等々確認して下さい。
 
 `SAP Frontend`は`Windows Server 2012 R2`でしたが、SAPサーバは`SUSE Linux Enterprise Server 12 SP3 x86_64 (64-bit)`ですね。
 
 ## SAPインスタンスを停止
 
-`SAP CAL`から起動をかけると、自動でSAPインスタンスが起動されるようですが。
-OSにログインしてマニュアルで起動停止する手順をここではやります。
-（スタートガイドの手順にある通りですが）
+`SAP CAL`から起動停止をかけると、OS起動時に自動でSAPインスタンスも起動されるようですが。
+OSにログインしてマニュアルで起動停止する手順をここでは説明します。
+（スタートガイドの手順にもあります）
 
 ```sh
 su - npladm
 sapcontrol -nr 00 -function GetProcessList
 ```
 
-まずはsidadmユーザ`npladm`にスイッチして`sapcontrol`コマンドを実行して現在動いているプロセスの確認をします。
-なお`00`はInstance Numberを指定しており、この環境はInstanceNoが`00`でインストールされていることがスタートガイドに書いてあります。
+まずは`root`ユーザからsidadmユーザ`npladm`にスイッチして`sapcontrol`コマンドを実行して現在動いているプロセスの確認をします。
+なお`00`はInstance Numberを指定しています。
+
+Instance NumberはSAPのインスタンスを識別するための一意な番号になりますが、スタートガイドにこの開発環境はInstanceNoが`00`でインストールされていることが記載されています。
 
 `GetProcessList`を実行  
 ![](image/get-process-list.png)
@@ -644,11 +655,12 @@ sapcontrol -nr 00 -function StopSystem
 `StopSystem`で止めた後に、`GetProcessList`で止まったことを確認  
 ![](image/stop-system.png)
 
-画像だと、`GetProcessList`をインスタンスが落ちる前に実行して一度目は`Running`の状態ですが、二回目は`Stopped`になっている事を確認できます。
+画像だと、`GetProcessList`をインスタンスが落ちる前に実行して一度目は`Running`と表示されていますが。
+2回目は少し待ってから実行したので`Stopped`になっている事を確認できます。
 
-またSAPが停止しているので、`SAP Frontend`から`SAP GUI`で接続しようとしても書きようにエラーになることが確認できます。
+またSAPが停止しているので、`SAP Frontend`から`SAP GUI`で接続しようとしてもエラーになることが確認できます。
 
-接続エラーになることを確認  
+`SAP GUI`で接続エラーになることを確認  
 ![](image/connection-refused.png)
 
 ## SAPインスタンスを起動
@@ -661,13 +673,14 @@ sapcontrol -nr 00 -function StartSystem
 
 ![](image/start-system.png)
 
-`sapcontrol`コマンドには起動停止時にwaitをするような機能も用意されているので、そちらを使って起動停止をまってみるのもよし。
+`sapcontrol`コマンドには起動停止時にwaitをするような機能も用意されているので、そちらを使って起動停止をまってみるのもよいでしょう。
 
 `sapcontrol --help`でヘルプを読めるのでヘルプ参照。
 
 ## SAP CALからインスタンスの停止
 
 利用が終わったら必ずインスタンスの停止をします。
+停止しないと起動中はずっとAWSのEC2利用料が発生してしまいます。
 
 `SAP CAL`のInstancesからsuspendを選択します。
 
@@ -694,21 +707,21 @@ sapcontrol -nr 00 -function StartSystem
 
 しばらく待つとステータスが`Active`になります。
 
-なお今回はデプロイ時に`Public Staic IP Adrees`にチェックをいれなかったので、`External IP`が固定されず都度AWSから払い出させれ変更になります。
+なお今回はデプロイ時に`Public Staic IP Adrees`のチェックをいれなかったので、`External IP`が固定されず都度AWSから払い出されて変更になります。
 
 ## ABAPについて
 
 ABAPは1983年に誕生したそこそこ歴史が長い言語なので、もともとはCOBOLに由来するような所から出発して。
-時代時代で拡張されて、オブジェクト指向（ABAP Object）だったり、自動テスト（ABAP Unit）な機能が追加されたりと、今現在はモダンな書き方も出来たりします。
+時代時代で拡張されて、オブジェクト指向（ABAP Object）だったり、自動テスト（ABAP Unit）な機能が拡張されたりと、今現在は言語としてモダンな書き方も出来たりします。
 
-なので時代とコーディングする人によっておなじ言語のはずなのですが、書き方にだいぶ差が出てきます。
+なので時代とコーディングする人によっておなじABAP言語のはずなのですが、書き方にだいぶ差が出てきます。
 （標準機能でも古い機能だと古い書き方ですし、新しいOOPな書き方で作られている標準機能もあります）
 
-最近は[Clea ABAP](https://github.com/SAP/styleguides)と呼ばれるモダンなコーディングが推奨されているようですが。
+最近は[styleguides - Clean ABAP](https://github.com/SAP/styleguides)と呼ばれるモダンなコーディングが推奨されているようですが。
 
 現場現場では昔ながらの書き方で規約が統一されていたり色々です。
 
-個人的には、その場所の規約に沿いつつ`ABAP Keyword Document`の`Obsolete Language Elements`に現在廃止された命令（互換性の問題があるので利用はできる）の項目があるので、それらは極力避けるよう調整していければいいのかな？　とも思います。
+個人的には、その現場の規約に沿いつつ`ABAP Keyword Document`の`Obsolete Language Elements`にある現在廃止された命令（互換性の問題があるので利用はできる）については、極力避けるよう調整していければいいのかな？　と思います。
 
 `Obsolete Language Elements`  
 ![](image/obsolete--language-elements.png)
@@ -743,8 +756,11 @@ SAP Frontend
 
 となります。
 
+EC2利用料とEBS利用料は上記で、あとはデータ通信量が少し発生しますが。
+RDPやSSHでつなぐだけったら気にするような金額は発生しないように思います。
+
 余談ですが、`SAP CAL`の`Cost Calsulator`とは微妙に数値がちがいますね。
-`CAL`に登録された時のAWS単価なのかな？　という気が少しします。
+`CAL`に該当製品が登録された時のAWS単価なのかな？　という気が少しします。
 
 `Cost Calsulator`  
 ![](image/cost-calculator.png)
@@ -757,31 +773,36 @@ SAP Frontend
 
 ## 総評
 
-昔から`AS ABAP developer edition`のインストール記事でも書こうかとは思いつつも手が動いてませんでした。
-SAP Advent Calendar 2020に登録したことですし、一念発起して書こうかとも思いましたが。
+昔から`AS ABAP Developer Edition`のインストール記事でも書こうかとは思いつつも手が動いてませんでした。
 
-最近、ネット上に日本語な`AS ABAP developer edition`のインストール記事をみかけるので。
-せっかくSAP Advent Calendarの一枠を埋めるのだったら、もう少し何か欲しい考えて。
+SAP Advent Calendar 2020に登録したことですし、一念発起して書こうかとも思いましたが。
+最近、ネット上に日本語な`AS ABAP Developer Edition`のインストール記事をみかけるので。
+せっかくSAP Advent Calendarの一枠を埋めるのだったら、もうひと味欲しいと考えて。
 
 SAPに縁もゆかりもない人がABAPになれしたしむためにはどうするか？
 
-というシナリオを考えて、`P-User`を取得し、`SAP CAL`を利用して`AS ABAP developer edition`で開発環境構築のシナリオを書いてみました。
+というシナリオを想定して、`P-User`を取得し、`SAP CAL`を利用して`AS ABAP Developer Edition`で開発環境構築を書いてみました。
 
 SAPに縁もゆかりもなかった人達が、SAPの存在を認識し、ABAPを知り、さわってみたいなんて事はどれくらいあるの？　とは思いつつ。
-クラウド利用料がかかりますが、ABAPさわりはじめの人だったり、ABAPよくわからないので自分専用の開発環境が手軽に欲しいってにとっては少しくらいは有用かと思います。
 
-これでSAP環境になれて、後でドキュメント読みながら自分で`AS ABAP developer edition`をインストールしても良いですし。
-IDESをインストールして、遊んでみてもいいでしょう。
+クラウド利用料がかかりますが、ABAPさわりはじめの人だったり、ABAPよくわからないので自分専用の開発環境が手軽に欲しい人にとってはこれはこれで少しは有用かと思います。
 
-ただ、ABAPと戯れるのは個人でもなんとかなるでしょうが、業務系知識となると個人レベルで太刀打ちできるようなものでもないので。
+なお`P-User`で`CAL`から`SAP IDES`もデプロイできそうに見ますが、試してないです。　できるようだったらすごい！
+
+これでSAP環境に慣れ親しんで、ドキュメント読みながら自分で`AS ABAP Developer Edition`をインストールしても良いですし。
+`P-User`以外のIDを持ってて権限があるなら`SAP IDES`をインストールして、遊んでみてもいいでしょう。
+
+ただ、ABAPと戯れるのは個人でもなんとかなるでしょうが、業務系知識となると個人レベルで太刀打ちするようなものでもないので。
 あくまでABAPの経験がつめるっている感じですね。
 
-あと筆者は`P-User`を今回初めて取得してみました。
+あと`P-User`は今回初めて取得してみました。
 
-ソフトウェアのダウンロードが出来ないので`SAP GUI`が入手できないのは、取得してみてから初めて気づきました。
-`P-User`でも`SAP GUI`は何かしら取得する方法があるのでは？　と考えていましたが。　現状なさそうですかね？
+ソフトウェアのダウンロードが出来ないので`SAP GUI`が入手できないという事実に、`P-User`を取得してみて初めて気づきました。
 
-`SAProuter`とかもダウンロード出来るようだったら、プライベートサブネットに`SAP`を配置して`SAProuter`経由でGUI接続とかやっても面白いかもと思いましたが、`P-User`だけだと多分出来ない気がします。
+`P-User`でも`SAP GUI`は何かしら取得する方法があるのでは？　と勝手に考えていましたが。　現状方法はなさそうです？
 
-ともかく、`SAP CAL`から環境構築すると幾ばく化のクラウド利用料と、少ない手間でABAPのお勉強ができるので。
-今まで気になっていた人は試してみるのもいいかもしれません。
+`SAProuter`とかも`P-User`でダウンロード出来るようだったら、プライベートサブネットに`SAP`を配置して`SAProuter`経由でGUI接続とかやっても面白いかもと思いましたが、`P-User`だけだと多分出来ない気がします。
+
+ともかく、`SAP CAL`から環境構築すると少額のクラウド利用料と、少ない手間でABAPの環境が手に入るので。
+
+今まで個人利用のABAP環境が気になっていた人は試してみるのもいいかもしれません。
